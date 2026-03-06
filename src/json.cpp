@@ -95,6 +95,10 @@ namespace util::json {
 	  
 	  if ( (cjsValue[0] == '{')  && (cjsValue[cjsValue.length()-1] == '}') ) {
 	    jsonNode.isObject = true;
+	    map<string, JSonNode> sObj;
+	    jsonNode.value = parse(cjsValue, sObj);
+	    jsonNode.value = sObj;
+	    //cout << cjsValue << endl;
 	  }
 	  else if ( (cjsValue[0] == '[')  && (cjsValue[cjsValue.length()-1] == ']') ) {
 	    jsonNode.isArray = true;
@@ -160,24 +164,13 @@ namespace util::json {
     return result;
   }
 
-
   map<string, JSonNode> JSon::parseIn(const string &jsonStr) const {
     map<string, JSonNode> result;
-
-
     auto validateInfo = validate(jsonStr);
     if (validateInfo.oBOpen == validateInfo.oBClose &&
 	validateInfo.sBOpen == validateInfo.sBClose) {
-
       parse(jsonStr, result);
-
-      // for (auto vS : result) {
-      // 	cout << vS.first << endl;
-      // }
-      
     }
-    
-
     return result;
   }
 }

@@ -52,6 +52,7 @@ namespace util::json {
     map<string, JSonNode> parse(const auto& jsonStr, auto& result) const;
     JSonValidateInfo validate(const string& inJsonStr) const;
   public:
-    map<string, JSonNode> parseIn(const string& inJsonStr) const;
+    map<string, JSonNode> parseIn(const string& inJsonStr,
+				  JSonValidateInfo* validateInfo=nullptr) const;
   };
 }

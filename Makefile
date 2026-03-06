@@ -79,8 +79,5 @@ $(OBJFILESAPP): $(SRCFILESAPP)
 	$(call get_source_file,$@,$^,$<)
 	@ $(CXX) $(CXXFLAGS) -c $(REAL_SRC_FILE) -o $@
 
-check-syntax:
-	$(CHKCXX) $(CXXFLAGSDEB) -o /dev/null -S $(CHK_SOURCES)
-
 clean:
 	@rm -rf $(OUTDIR)

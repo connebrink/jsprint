@@ -58,7 +58,6 @@ namespace util::json {
 
       if (jC == '{' && !isInStr) {
 	level++;
-	//	    cout << "l:" << level << endl;
 	if (level < 2)
 	  continue;
       }

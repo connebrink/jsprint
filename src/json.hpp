@@ -7,24 +7,34 @@
 
 namespace util::json {
   using namespace std;
-  struct JSonNodeValue {
-    enum VType {String, Number, Boolean} type;
-    variant<double, bool, string> value;
-  };
   struct JSonNode {
+    string name;
     bool isObject;
     bool isArray;
     bool isValue;
     bool isNull;
-    variant<map<string, JSonNode>, vector<JSonNode>, JSonNodeValue> value;
-    JSonNode operator[] (const string& nodeName) {
-      return get<map<string, JSonNode>>(value)[nodeName];
+    enum VType {String, Number, Boolean} valueType;
+    variant<map<string, JSonNode>, vector<JSonNode>, double, bool, string> value;
+    JSonNode operator[] (const char * nName)  {
+      return get<map<string, JSonNode>>(value)[string(nName)];
     }
     JSonNode operator[] (int index) {
       return get<vector<JSonNode>>(value)[index];
     }
-    JSonNodeValue val() {
-      return get<JSonNodeValue>(value);
+    operator string() const {
+      if (isValue)
+	return get<string>(value);
+      return "";
+    }
+    operator double() const {
+      if (isValue)
+	return get<double>(value);
+      return 0.0;
+    }
+    operator bool() const {
+      if (isValue)
+	return get<bool>(value);
+      return false;
     }
   };
   struct JSonValidateInfo {

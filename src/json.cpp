@@ -88,11 +88,11 @@ namespace util::json {
 
 	if (level < 2) {
 	  JSonNode jsonNode;
+	  jsonNode.name = cjsName;
 	  jsonNode.isArray = false;
 	  jsonNode.isObject= false;
 	  jsonNode.isNull= false;
 	  jsonNode.isValue = false;
-	  
 	  if ( (cjsValue[0] == '{')  && (cjsValue[cjsValue.length()-1] == '}') ) {
 	    jsonNode.isObject = true;
 	    map<string, JSonNode> sObj;
@@ -107,27 +107,23 @@ namespace util::json {
 	    //cout << isStrValue << endl;
 	    if (isStrValue) {
 	      jsonNode.isValue = true;
-	      JSonNodeValue value;
-	      value.type = JSonNodeValue::VType::String;
-	      value.value = cjsValue; 
-              jsonNode.value = value;
+	      jsonNode.valueType = JSonNode::VType::String;
+	      jsonNode.value = cjsValue; 
 	      isStrValue = false;
 	    }
 	    else {
 	      if (cjsValue == "null")
 		jsonNode.isNull = true;
 	      else {
-		JSonNodeValue value;
 		jsonNode.isValue = true;
 		if (cjsValue == "false" || cjsValue == "true") {
-		  value.type = JSonNodeValue::VType::Boolean;
-		  value.value = cjsValue == "true";
+		  jsonNode.valueType = JSonNode::VType::Boolean;
+		  jsonNode.value = cjsValue == "true";
                 } else  {
 		  //	  cout << cjsValue << endl;
-		  value.type = JSonNodeValue::VType::Number;
-		  value.value = stod(cjsValue);
+		  jsonNode.valueType = JSonNode::VType::Number;
+		  jsonNode.value = stod(cjsValue);
                 }
-                jsonNode.value = value;
               }
             }
           }

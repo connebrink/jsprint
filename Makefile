@@ -1,23 +1,20 @@
-PRJNAME=clany
+PRJNAME=jsprint
 
 CXX=g++
 CHKCXX=clang++
 
-INCDIRS=-I. -Iinc/ -Iinc
-INCDIRS+=-I/usr/include
-
 CXXFLAGS=
-CXXFLAGSDEF=
-CXXFLAGSDEB=-std=c++20 -Wall -g -pg -O0 -DDEBUG $(CXXFLAGSDEF) $(INCDIRS)
-CXXFLAGSREL=-std=c++20 -Wall -O3 -DNDEBUG $(CXXFLAGSDEF) $(INCDIRS)
-LDLIBS=-lPocoNetSSL -lPocoFoundation -lPocoJSON -lPocoXML -lPocoCrypto
+CXXFLAGSDEF=-std=c++20 -pedantic -Wall -Wextra -Werror
+CXXFLAGSDEB=$(CXXFLAGSDEF) -g -pg -O0 -DDEBUG
+CXXFLAGSREL=$(CXXFLAGSDEF) -O3 -DNDEBUG
+LDLIBS=
 LDFLAGS=
 
 LDFLAGSDEF=-L/usr/lib -Wl,-rpath,'$$ORIGIN' -Wl,--as-needed -Llib -Lbin/
 
 LDFLAGSDEB=$(LDFLAGSDEF) $(LDLIBS)
 LDFLAGSREL=$(LDFLAGSDEF) $(LDLIBS)
-LDFLAGSTST=-lgcov
+LDFLAGSTST=
 
 DEPDIR=bin
 OUTDIR=trg

@@ -5,42 +5,31 @@
 
 namespace util::json {
 
-  map<string, JSonNode> JSon::parseIn(const string &inStr) const {
+  JSonValidateInfo JSon::validate(const string& jsonStr) const {
+    JSonValidateInfo result = {0,0,0,0,false};
+    bool isInStrVal = false;
+    for (const auto& jC : jsonStr) {
+      if (jC == ' ')
+	continue;
+      if (jC == '"' && isInStrVal) {
+	isInStrVal = false;
+	continue;
+      } else if (jC == '"' && !isInStrVal)
+	isInStrVal = true;
+      if (jC == '{' && !isInStrVal)
+	result.oBOpen++;
+      if (jC == '}' && !isInStrVal)
+	result.oBClose++;
+      if (jC == '[' && !isInStrVal)
+	result.sBOpen++;
+      if (jC == ']' && !isInStrVal)
+	result.sBClose++;
+    }
+    return result;
+  };
+
+  map<string, JSonNode> JSon::parseIn(const string &jsonStr) const {
     map<string, JSonNode> result;
-
-    if (inStr == "" || inStr.length() == 0)
-      return result;
-
-    struct validateInfo {
-      int oBOpen;
-      int oBClose;
-      int sBOpen;
-      int sBClose;
-      bool hasInvalidChars;
-    };
-
-    auto validate = [](const auto& jsonStr) {
-      validateInfo result = {0,0,0,0,false};
-      bool isInStrVal = false;
-      for (const auto& jC : jsonStr) {
-	if (jC == ' ')
-	  continue;
-        if (jC == '"' && isInStrVal) {
-          isInStrVal = false;
-	  continue;
-        } else if (jC == '"' && !isInStrVal)
-          isInStrVal = true;
-        if (jC == '{' && !isInStrVal)
-          result.oBOpen++;
-        if (jC == '}' && !isInStrVal)
-          result.oBClose++;
-        if (jC == '[' && !isInStrVal)
-          result.sBOpen++;
-        if (jC == ']' && !isInStrVal)
-          result.sBClose++;
-      }
-      return result;
-    };
 
     auto parse = [](const auto &jsonStr, const auto &jsonName, auto &result) {
       bool valName   = false;
@@ -114,11 +103,11 @@ namespace util::json {
       }
     };
 
-    auto validateInfo = validate(inStr);
+    auto validateInfo = validate(jsonStr);
     if (validateInfo.oBOpen == validateInfo.oBClose &&
 	validateInfo.sBOpen == validateInfo.sBClose) {
 
-      parse(inStr, "", result);
+      parse(jsonStr, "", result);
 
       // for (auto vS : result) {
       // 	cout << vS.first << endl;

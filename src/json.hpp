@@ -27,11 +27,20 @@ namespace util::json {
       return get<JSonNodeValue>(value);
     }
   };
+  struct JSonValidateInfo {
+    int oBOpen;
+    int oBClose;
+    int sBOpen;
+    int sBClose;
+    bool hasInvalidChars;
+  };
   class JSon
   {
   public:
     JSon(){};
   public:
-    map<string, JSonNode> parseIn(const string& inStr) const;
+    JSonValidateInfo validate(const string& inJsonStr) const;
+  public:
+    map<string, JSonNode> parseIn(const string& inJsonStr) const;
   };
 }

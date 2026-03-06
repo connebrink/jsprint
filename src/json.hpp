@@ -9,7 +9,7 @@ namespace util::json {
   using namespace std;
   struct JSonNodeValue {
     enum VType {String, Number, Boolean} type;
-    variant<int, double, bool, string> value;
+    variant<double, bool, string> value;
   };
   struct JSonNode {
     bool isObject;
@@ -38,6 +38,8 @@ namespace util::json {
   {
   public:
     JSon(){};
+  private:
+    map<string, JSonNode> parse(const auto& jsonStr, auto& result) const;
   public:
     JSonValidateInfo validate(const string& inJsonStr) const;
   public:

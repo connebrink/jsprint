@@ -30,22 +30,13 @@ namespace util::json {
   };
 
   map<string, JSonNode> JSon::parse(const auto &jsonStr, auto &result) const {
-
-    // auto is_number= [](const std::string& s)
-    // {
-    //   return !s.empty() && std::find_if(s.begin(), 
-    // 					s.end(), [](unsigned char c) {
-    // 					  return !std::isdigit(c); }) == s.end();
-    // };
     
     bool valName   = false;
     bool isInStr   = false;
-    //bool isInObj   = false;
     bool isInArray = false;
       
     string cjsName;
     string cjsValue;
-      
  
     int level = 0;
 
@@ -120,15 +111,12 @@ namespace util::json {
 		  jsonNode.valueType = JSonNode::VType::Boolean;
 		  jsonNode.value = cjsValue == "true";
                 } else  {
-		  //	  cout << cjsValue << endl;
 		  jsonNode.valueType = JSonNode::VType::Number;
 		  jsonNode.value = stod(cjsValue);
                 }
               }
             }
           }
-
-	  
 
 	  //	  cout << cjsName << " : " << cjsValue << endl; 
 
@@ -140,12 +128,6 @@ namespace util::json {
 	if (jC == ',' && level < 2)
 	  continue;
 	else if (jC == '}') {
-	  //isInObj = false;
-          if (level >= 2) {
-            map<string, JSonNode> ertbb;
-            // cout << "e: " << cjsName << " : " << cjsValue << endl;
-            parse(cjsValue + "}", ertbb);
-          }
           level--;
 	} else if (jC == ']')
 	  isInArray = false;

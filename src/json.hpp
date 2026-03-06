@@ -18,7 +18,7 @@ namespace util::json {
     JSonNode operator[] (const char * nName)  {
       return get<map<string, JSonNode>>(value)[nName];
     }
-    JSonNode operator[] (int index) {
+    JSonNode operator[] (int index) const {
       return get<vector<JSonNode>>(value)[index];
     }
     operator string() const {

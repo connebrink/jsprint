@@ -126,7 +126,7 @@ namespace util::json {
     return result;
   }
 
-  map<string, JSonNode> JSon::parseIn(const string &jsonStr,JSonValidateInfo* validateInfo) const {
+  map<string, JSonNode> JSon::parseIn(const string &jsonStr, JSonValidateInfo* validateInfo) const {
     map<string, JSonNode> result;
     if (validateInfo) {
       auto validateInfo = validate(jsonStr);
@@ -136,7 +136,7 @@ namespace util::json {
       }
     }
     else {
-       parse(jsonStr, result);
+      parse(jsonStr, result);
     }
     return result;
   }

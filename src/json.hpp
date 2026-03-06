@@ -16,7 +16,7 @@ namespace util::json {
     enum VType {String, Number, Boolean} valueType;
     variant<map<string, JSonNode>, vector<JSonNode>, double, bool, string> value;
     JSonNode operator[] (const char * nName)  {
-      return get<map<string, JSonNode>>(value)[string(nName)];
+      return get<map<string, JSonNode>>(value)[nName];
     }
     JSonNode operator[] (int index) {
       return get<vector<JSonNode>>(value)[index];

@@ -54,7 +54,7 @@ endef
 
 .PHONY: all
 
-all: clean debug
+all: debug
 
 debug:CXXFLAGS=$(CXXFLAGSDEB)
 debug:LDFLAGS=$(LDFLAGSDEB)

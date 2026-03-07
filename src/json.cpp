@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <vector>
 
 #include "json.hpp"
 
@@ -39,9 +40,12 @@ namespace util::json {
 
     int level{0};
 
+    vector<JSonNode> jArray;
+
     for (const auto &jC : jsonStr) {
-      if (jC == ' ')
+      if (jC == ' ' && !isInStr)
 	continue;
+
       if (jC == '"' && isInStr && level < 2) {
 	isInStr = false;
 	continue;
@@ -52,13 +56,15 @@ namespace util::json {
 	  isStrValue = true;
 	continue;
       }
+      
       if (jC == '{' && !isInStr) {
 	level++;
 	if (level < 2)
 	  continue;
       }
-      if (jC == '[' && !isInArray && !isInStr) {
+      if (jC == '[' && !isInStr) {
 	isInArray = true;
+	jArray.clear();
 	continue;
       }
       if (jC == ':' && !isInStr && cjsName != "" && level < 2) {
@@ -67,8 +73,73 @@ namespace util::json {
 	  continue;
 	}
       }
-      if ((jC == ',' || jC == '}' || jC == ']') && !isInStr && !valName) {
-	if (level < 2) {
+      if ((jC == ',' || jC == '}' || jC == ']') && !isInStr && !valName && cjsValue.length() > 0) {
+	if (isInArray) {
+          if (level < 2) {
+	    // cout << cjsValue << endl;
+
+	    JSonNode jsonArrNode;
+	    jsonArrNode.isArray = false;
+	    jsonArrNode.isObject= false;
+	    jsonArrNode.isNull= false;
+	    jsonArrNode.isValue = false;
+
+	    if ( (cjsValue[0] == '{')  && (cjsValue[cjsValue.length()-1] == '}') ) {
+	      jsonArrNode.isObject= true;
+	      map<string, JSonNode> sObj;
+	      jsonArrNode.value = parse(cjsValue, sObj);
+	      jsonArrNode.value = sObj;
+	      jArray.push_back(jsonArrNode);
+	    }
+	    else {
+	      if (isStrValue) {
+		jsonArrNode.isValue = true;
+		jsonArrNode.valueType = JSonNode::VType::String;
+		jsonArrNode.value = cjsValue; 
+		isStrValue = false;
+	      }
+	      else {
+		if (cjsValue == "null")
+		  jsonArrNode.isNull = true;
+		else {
+		  jsonArrNode.isValue = true;
+		  if (cjsValue == "false" || cjsValue == "true") {
+		    jsonArrNode.valueType = JSonNode::VType::Boolean;
+		    jsonArrNode.value = cjsValue == "true";
+		  } else {
+		    jsonArrNode.valueType = JSonNode::VType::Number;
+		    jsonArrNode.value = stod(cjsValue);
+		  }
+		}
+	      }
+	      jArray.push_back(jsonArrNode);
+	    }
+
+	    
+	    cjsValue = "";
+          }
+          if (jC == '}') {
+            level--;
+          }
+	  if (jC == ']') {
+	    //cout << cjsName << endl;
+	    isInArray = false;
+	    JSonNode jsonNode;
+	    jsonNode.name = cjsName;
+	    jsonNode.isArray = true;
+	    jsonNode.isObject= false;
+	    jsonNode.isNull= false;
+	    jsonNode.isValue = false;
+	    jsonNode.value = jArray;
+	    result[cjsName] = jsonNode;
+	    cjsName = "";
+	    cjsValue = "";
+	    continue;
+	  }
+	}
+	else if (level < 2) {
+	  //cout << cjsName << endl;
+	  //cout << cjsValue << endl;
 	  JSonNode jsonNode;
 	  jsonNode.name = cjsName;
 	  jsonNode.isArray = false;
@@ -80,9 +151,6 @@ namespace util::json {
 	    map<string, JSonNode> sObj;
 	    jsonNode.value = parse(cjsValue, sObj);
 	    jsonNode.value = sObj;
-	  }
-	  else if ( (cjsValue[0] == '[')  && (cjsValue[cjsValue.length()-1] == ']') ) {
-	    jsonNode.isArray = true;
 	  }
 	  else {
 	    if (isStrValue) {
@@ -99,25 +167,25 @@ namespace util::json {
 		if (cjsValue == "false" || cjsValue == "true") {
 		  jsonNode.valueType = JSonNode::VType::Boolean;
 		  jsonNode.value = cjsValue == "true";
-                } else  {
+		} else {
 		  jsonNode.valueType = JSonNode::VType::Number;
 		  jsonNode.value = stod(cjsValue);
-                }
-              }
-            }
-          }
-	  //	  cout << cjsName << " : " << cjsValue << endl; 
+		}
+	      }
+	    }
+	  }
+	  //	  cout << cjsName << " : " << cjsValue << endl;
 	  result[cjsName] = jsonNode;
 	  cjsName = "";
 	  cjsValue = "";
-        }
-	if (jC == ',' && level < 2)
+	}
+  	if (jC == ',' && level < 2)
 	  continue;
-	else if (jC == '}') {
-          level--;
-	} else if (jC == ']')
-	  isInArray = false;
+	else if (jC == '}' && !isInArray) {
+	  level--;
+	}
       }
+      
       if (valName)
 	cjsName += jC;
       else

@@ -45,7 +45,6 @@ namespace util::json {
     for (const auto &jC : jsonStr) {
       if (jC == ' ' && !isInStr)
 	continue;
-
       if (jC == '"' && isInStr && level < 2) {
 	isInStr = false;
 	continue;
@@ -56,7 +55,6 @@ namespace util::json {
 	  isStrValue = true;
 	continue;
       }
-      
       if (jC == '{' && !isInStr) {
 	level++;
 	if (level < 2)
@@ -77,13 +75,7 @@ namespace util::json {
 	if (isInArray) {
           if (level < 2) {
 	    // cout << cjsValue << endl;
-
 	    JSonNode jsonArrNode;
-	    jsonArrNode.isArray = false;
-	    jsonArrNode.isObject= false;
-	    jsonArrNode.isNull= false;
-	    jsonArrNode.isValue = false;
-
 	    if ( (cjsValue[0] == '{')  && (cjsValue[cjsValue.length()-1] == '}') ) {
 	      jsonArrNode.isObject= true;
 	      map<string, JSonNode> sObj;
@@ -114,8 +106,6 @@ namespace util::json {
 	      }
 	      jArray.push_back(jsonArrNode);
 	    }
-
-	    
 	    cjsValue = "";
           }
           if (jC == '}') {
@@ -127,9 +117,6 @@ namespace util::json {
 	    JSonNode jsonNode;
 	    jsonNode.name = cjsName;
 	    jsonNode.isArray = true;
-	    jsonNode.isObject= false;
-	    jsonNode.isNull= false;
-	    jsonNode.isValue = false;
 	    jsonNode.value = jArray;
 	    result[cjsName] = jsonNode;
 	    cjsName = "";
@@ -138,14 +125,8 @@ namespace util::json {
 	  }
 	}
 	else if (level < 2) {
-	  //cout << cjsName << endl;
-	  //cout << cjsValue << endl;
 	  JSonNode jsonNode;
 	  jsonNode.name = cjsName;
-	  jsonNode.isArray = false;
-	  jsonNode.isObject= false;
-	  jsonNode.isNull= false;
-	  jsonNode.isValue = false;
 	  if ( (cjsValue[0] == '{')  && (cjsValue[cjsValue.length()-1] == '}') ) {
 	    jsonNode.isObject = true;
 	    map<string, JSonNode> sObj;
@@ -185,7 +166,6 @@ namespace util::json {
 	  level--;
 	}
       }
-      
       if (valName)
 	cjsName += jC;
       else

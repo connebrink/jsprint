@@ -8,6 +8,12 @@
 namespace util::json {
   using namespace std;
   struct JSonNode {
+    JSonNode() {
+      isObject = false;
+      isArray  = false;
+      isValue = false;
+      isNull = false;
+    }
     string name;
     bool isObject;
     bool isArray;

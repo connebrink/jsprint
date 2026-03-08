@@ -7,7 +7,7 @@ easy to understand implementations very much!
 ## Why
 I want/need a small app that shows JSON in different styles and   
 themes in terminal, selected by arguments. And its a small app  
-to test quick new C++-things and new approaches cames in with   
+to test quick new C++-things and new approaches came in with   
 newer C++-versions. So its a project to exercise things in C++  
 too.
 

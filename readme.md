@@ -12,7 +12,7 @@ newer C++-versions. So its a project to exercise things in C++
 too.
 
 ## Requirements
-- C++-Compiler with C++-20-Support
+- C++-Compiler (with at least C++-20-Support)
 - GNU Make
 
 ## How to build

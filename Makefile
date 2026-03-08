@@ -1,7 +1,6 @@
 PRJNAME=jsprint
 
 CXX=g++
-CHKCXX=clang++
 
 CXXFLAGS=
 CXXFLAGSDEF=-std=c++20 -pedantic -Wall -Wextra -Werror

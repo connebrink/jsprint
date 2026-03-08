@@ -1,6 +1,8 @@
 
 # JSon Print
-Parse and print out given json in different styles and themes.
+Parse and print out given json in different styles and themes.  
+An easy and almost naiv and simple implementation. But i like  
+easy to understand implementations very much!
 
 ## Requirements
 - C++-Compiler with C++-20-Support

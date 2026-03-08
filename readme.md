@@ -1,7 +1,7 @@
 
 # JSon Print
 Parse and print out given json in different styles and themes.  
-An easy and almost naive and simple implementation. But i like  
+An easy, almost naive and simple implementation. But i like  
 easy to understand implementations very much!
 
 ## Requirements

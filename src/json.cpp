@@ -33,14 +33,14 @@ namespace util::json {
     string cjsName;
     string cjsValue;
 
+    vector<JSonNode> jArray;
+
     bool valName{false};
     bool isInStr{false};
     bool isInArray{false};
     bool isStrValue{false};
 
     int level{0};
-
-    vector<JSonNode> jArray;
 
     for (const auto &jC : jsonStr) {
       if (jC == ' ' && !isInStr)
@@ -74,7 +74,6 @@ namespace util::json {
       if ((jC == ',' || jC == '}' || jC == ']') && !isInStr && !valName && cjsValue.length() > 0) {
 	if (isInArray) {
           if (level < 2) {
-	    // cout << cjsValue << endl;
 	    JSonNode jsonArrNode;
 	    if ( (cjsValue[0] == '{')  && (cjsValue[cjsValue.length()-1] == '}') ) {
 	      jsonArrNode.isObject= true;
@@ -112,7 +111,6 @@ namespace util::json {
             level--;
           }
 	  if (jC == ']') {
-	    //cout << cjsName << endl;
 	    isInArray = false;
 	    JSonNode jsonNode;
 	    jsonNode.name = cjsName;

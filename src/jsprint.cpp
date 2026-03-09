@@ -47,10 +47,7 @@ RunInfos loadRunInfo(int argCount, char **argValues) {
     result.rawJsonStr = readJsonStrFromFile(jsonFileName);
   else
     result.rawJsonStr = readJsonStrFromStandardIn();
-  if (result.rawJsonStr.length() == 0)
-    result.action = RunInfos::Action::SHELP;
-  else
-    result.action = RunInfos::Action::SPARSE;
+  result.action = result.rawJsonStr.empty() ? RunInfos::Action::SHELP : RunInfos::Action::SPARSE;
   return result;
 }
 

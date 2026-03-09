@@ -52,6 +52,14 @@ RunInfos loadRunInfo(int argCount, char **argValues) {
 }
 
 int showHelp() {
+  cout << " JSonPrint Options: " << endl;
+  cout << "  '-h'          ->  This help" << endl;
+  cout << "  '-j:<file>'   ->  Jsonfile, to process" << endl;
+  cout << "  '-t:<theme>'  ->  Theme, to use for pretty print" << endl;
+  cout << "  '-s:<style>'  ->  Style, to use for pretty print" << endl;
+  cout << "  '-lt'         ->  List themes" << endl;
+  cout << "  '-ls'         ->  List styles" << endl;
+  cout << "  '-c'          ->  Show version" << endl;
   return 0;
 }
 
@@ -169,5 +177,6 @@ int main(int argCount, char **argValues) {
 // std::cout << btest << std::endl;
 //   return 0;
 // }
+
 
 

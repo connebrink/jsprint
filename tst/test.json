@@ -1,0 +1,22 @@
+{
+  "testA": "hi test",
+  "testB": 342,
+  "testO": {
+    "name": "hello",
+    "nachname": "world",
+    "isPrivate": true
+  },
+  "testC": false,
+  "testD": null,
+  "testE": "null",
+  "testF": true,
+  "testZ": [
+    "a",
+    "b",
+    {
+      "sO1": 2323,
+      "sO2": "hi"
+    },
+    "c"
+  ]
+}};

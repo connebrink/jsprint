@@ -1,25 +1,71 @@
 
-#include <map>
+#include <string>
+#include <fstream>
 #include <iostream>
+#include <map>
 
 #include "json.hpp"
 
-int main(void)
-{
-  std::string ert = {"{\"testA\": \"hi test\", \"testB\": "
-                     "342,\"testO\":{\"name\":\"hello\",\"nachname\":\"world\","
-                     "\"isPrivate\": true}, \"testC\": false, \"testD\": null, "
-                     "\"testE\": \"null\", \"testF\": true, \"testZ\": "
-                     "[\"a\",\"b\",{\"sO1\": 2323, \"sO2\": \"hi\"},\"c\"]}"};
+const int MSG_I_SUCCEEDED {0};
+const int MSG_I_ERROR     {101};
 
-  //std::string ert = "[\"anzahl\",{\"val1\": false, \"val2\": \"hallo\"}, \"test\"]";
-  
-  //   std::string ert = "[\"hallowelt\", \"12323\"]"; 
-  
-  std::cout <<  ert << std::endl << std::endl;
+using namespace std;
+
+struct RunInfos {
+  enum class Action { SHELP, STHEMES, SSTYLES, SPARSE } action;
+  enum class Style {sNormal} style;
+  enum class Theme {tDark} theme;
+  string rawJsonStr;
+};
+
+string readJsonStrFromFile(const string& fullFileName) {
+  string result;
+  ifstream file(fullFileName);
+  if (file.is_open()) {
+    string line;
+    while (getline(file, line))
+      result += line;
+    file.close();
+  }
+  return result;
+};
+
+string readJsonStrFromStandardIn() {
+  string result;
+  for (string line; getline(cin, line);) 
+    result += line;
+  return result;
+};
+
+RunInfos loadRunInfo(int argCount, char **argValues) {
+  RunInfos result;
+  string jsonFileName;
+  for (auto i = 0; i < argCount; ++i) {
+    string tArgValue{argValues[i]};
+  }
+  if (jsonFileName.length() > 0)
+    result.rawJsonStr = readJsonStrFromFile(jsonFileName);
+  else
+    result.rawJsonStr = readJsonStrFromStandardIn();
+  if (result.rawJsonStr.length() == 0)
+    result.action = RunInfos::Action::SHELP;
+  else
+    result.action = RunInfos::Action::SPARSE;
+  return result;
+}
+
+int showHelp() {
+  return 0;
+}
+
+int showThemes() {return MSG_I_SUCCEEDED;}
+int showStyles() {return MSG_I_SUCCEEDED;}
+
+int showParse(const RunInfos& rInfos) {
   util::json::JSon json;
-  auto rsData = json.parseIn(ert);
-  for (const auto& node : rsData) {
+  auto rsData = json.parseIn(rInfos.rawJsonStr);
+
+    for (const auto& node : rsData) {
     if (node.second.isValue) {
       std::string vVal;
       if (node.second.valueType == util::json::JSonNode::VType::String)
@@ -88,6 +134,30 @@ int main(void)
     }
   }
 
+  
+  return MSG_I_SUCCEEDED;
+}
+
+int main(int argCount, char **argValues) {
+  RunInfos rInfos = loadRunInfo(argCount, argValues);
+  if (rInfos.action == RunInfos::Action::SHELP)
+    return showHelp();
+  if (rInfos.action == RunInfos::Action::STHEMES)
+    return showThemes();
+  if (rInfos.action == RunInfos::Action::SSTYLES)
+    return showStyles();
+  if (rInfos.action == RunInfos::Action::SPARSE)
+    return showParse(rInfos);
+  return MSG_I_ERROR;
+}
+
+  // std::string ert = {"{\"testA\": \"hi test\", \"testB\": "
+  //                    "342,\"testO\":{\"name\":\"hello\",\"nachname\":\"world\","
+  //                    "\"isPrivate\": true}, \"testC\": false, \"testD\": null, "
+  //                    "\"testE\": \"null\", \"testF\": true, \"testZ\": "
+  //                    "[\"a\",\"b\",{\"sO1\": 2323, \"sO2\": \"hi\"},\"c\"]}"};
+
+
 //   auto test = rsData["testO"];
 //   if (test.isObject) {
 //     std::cout << "isObject" << std::endl;
@@ -100,7 +170,7 @@ int main(void)
 
 // auto btest = static_cast<std::string>(rsData["testO"]["name"]);
 // std::cout << btest << std::endl;
-  return 0;
-}
+//   return 0;
+// }
 
 

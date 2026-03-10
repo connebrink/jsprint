@@ -28,26 +28,31 @@ namespace util::json {
     return result;
   };
 
-  map<string, JSonNode> JSon::parse(const auto &jsonStr, auto &result) const {
+  JSonNode JSon::parse(const auto &jsonStr) const {
     string cjsName;
     string cjsValue;
 
-    vector<JSonNode> jArray;
-
-    bool valName{false};
     bool isInStr{false};
+    bool isInObject{false};
     bool isInArray{false};
     bool isStrValue{false};
+    bool isSubLevel{false};
 
-    int level{0};
+    bool valName{false};
+
+    JSonNode result;
+    result.name = ".";
+
+    vector<JSonNode> jArray;
+    map<string, JSonNode> jObject;
 
     for (const auto &jC : jsonStr) {
       if (jC == ' ' && !isInStr)
 	continue;
-      if (jC == '"' && isInStr && level < 2) {
+      if (jC == '"' && isInStr && !isSubLevel) {
 	isInStr = false;
 	continue;
-      } else if (jC == '"' && !isInStr && level < 2 ) {
+      } else if (jC == '"' && !isInStr && !isSubLevel) {
 	isInStr = true;
 	valName = cjsName.length() == 0;
 	if (!valName)
@@ -55,16 +60,19 @@ namespace util::json {
 	continue;
       }
       if (jC == '{' && !isInStr) {
-	level++;
-	if (level < 2)
-	  continue;
+        if (!isInObject) {
+	  isInObject = true;
+          continue;
+        }
+	else
+	  isSubLevel = true;
       }
       if (jC == '[' && !isInStr) {
 	isInArray = true;
 	jArray.clear();
 	continue;
       }
-      if (jC == ':' && !isInStr && cjsName != "" && level < 2) {
+      if (jC == ':' && !isInStr && cjsName != "" && !isSubLevel) {
 	if (valName) {
 	  valName = false;
 	  continue;
@@ -72,16 +80,15 @@ namespace util::json {
       }
       if ((jC == ',' || jC == '}' || jC == ']') && !isInStr && !valName && cjsValue.length() > 0) {
 	if (isInArray) {
-          if (level < 2) {
-	    JSonNode jsonArrNode;
+          if (!isSubLevel) {
 	    if ( (cjsValue[0] == '{')  && (cjsValue[cjsValue.length()-1] == '}') ) {
-	      jsonArrNode.isObject= true;
-	      map<string, JSonNode> sObj;
-	      jsonArrNode.value = parse(cjsValue, sObj);
-	      jsonArrNode.value = sObj;
-	      jArray.push_back(jsonArrNode);
+	      jArray.push_back(parse(cjsValue));
+	    }
+	    if ( (cjsValue[0] == '[')  && (cjsValue[cjsValue.length()-1] == ']') ) {
+	      jArray.push_back(parse(cjsValue));
 	    }
 	    else {
+	      JSonNode jsonArrNode;
 	      if (isStrValue) {
 		jsonArrNode.isValue = true;
 		jsonArrNode.valueType = JSonNode::VType::String;
@@ -107,30 +114,25 @@ namespace util::json {
 	    cjsValue = "";
           }
           if (jC == '}') {
-            level--;
+            if (isSubLevel)
+	      isSubLevel = false;
+	    else isInObject = false;
           }
 	  if (jC == ']') {
 	    isInArray = false;
-	    JSonNode jsonNode;
-	    jsonNode.name = cjsName;
-	    jsonNode.isArray = true;
-	    jsonNode.value = jArray;
-	    result[cjsName] = jsonNode;
+	    result.isArray = true;
+	    result.value=jArray;
 	    cjsName = "";
 	    cjsValue = "";
 	    continue;
 	  }
 	}
-	else if (level < 2) {
-	  JSonNode jsonNode;
-	  jsonNode.name = cjsName;
+	else if (isInObject && !isSubLevel) {
 	  if ( (cjsValue[0] == '{')  && (cjsValue[cjsValue.length()-1] == '}') ) {
-	    jsonNode.isObject = true;
-	    map<string, JSonNode> sObj;
-	    jsonNode.value = parse(cjsValue, sObj);
-	    jsonNode.value = sObj;
+	    jObject[cjsName] = parse(cjsValue);
 	  }
 	  else {
+	    JSonNode jsonNode;
 	    if (isStrValue) {
 	      jsonNode.isValue = true;
 	      jsonNode.valueType = JSonNode::VType::String;
@@ -151,38 +153,43 @@ namespace util::json {
 		}
 	      }
 	    }
+	    jObject[cjsName] =jsonNode;
 	  }
 	  //	  cout << cjsName << " : " << cjsValue << endl;
-	  result[cjsName] = jsonNode;
+	  
 	  cjsName = "";
 	  cjsValue = "";
 	}
-  	if (jC == ',' && level < 2)
+  	if (jC == ',' && !isSubLevel)
 	  continue;
-	else if (jC == '}' && !isInArray) {
-	  level--;
-	}
+        else if (jC == '}') {
+          if (isSubLevel)
+            isSubLevel = false;
+          else
+            isInObject = false;
+
+          result.isObject = true;
+          result.value = jObject;
+        }
       }
       if (valName)
-	cjsName += jC;
+        cjsName += jC;
       else
-	cjsValue += jC;
+        cjsValue += jC;
     }
+  
+
     return result;
   }
 
-  map<string, JSonNode> JSon::parseIn(const string &jsonStr, JSonValidateInfo* validateInfo) const {
-    map<string, JSonNode> result;
+  JSonNode JSon::parseIn(const string &jsonStr, JSonValidateInfo* validateInfo) const {
     if (validateInfo) {
       auto validateInfo = validate(jsonStr);
       if (validateInfo.oBOpen == validateInfo.oBClose &&
           validateInfo.sBOpen == validateInfo.sBClose) {
-        parse(jsonStr, result);
+        return parse(jsonStr);
       }
     }
-    else {
-      parse(jsonStr, result);
-    }
-    return result;
+    return parse(jsonStr);
   }
 }

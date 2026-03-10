@@ -55,10 +55,10 @@ namespace util::json {
   public:
     JSon(){};
   private:
-    map<string, JSonNode> parse(const auto& jsonStr, auto& result) const;
+    JSonNode parse(const auto& jsonStr) const;
     JSonValidateInfo validate(const string& inJsonStr) const;
   public:
-    map<string, JSonNode> parseIn(const string& inJsonStr,
-				  JSonValidateInfo* validateInfo=nullptr) const;
+    JSonNode parseIn(const string& inJsonStr, JSonValidateInfo* validateInfo=nullptr) const;
   };
+
 }

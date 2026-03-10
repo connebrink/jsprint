@@ -10,11 +10,12 @@ const int MSG_I_SUCCEEDED {0};
 const int MSG_I_ERROR     {101};
 
 using namespace std;
+using namespace util::json;
 
 struct RunInfos {
   enum class Action { SHELP, STHEMES, SSTYLES, SPARSE } action;
-  enum class Style {sNormal} style;
-  enum class Theme {tDark} theme;
+  enum class Style { sNormal } style;
+  enum class Theme { tNone, tDark, tBright } theme;
   string rawJsonStr;
 };
 
@@ -66,23 +67,22 @@ int showHelp() {
 int showThemes() {return MSG_I_SUCCEEDED;}
 int showStyles() {return MSG_I_SUCCEEDED;}
 
-
-void loopThrough(const util::json::JSonNode& jNode) {
+void loopThrough(const JSonNode& jNode) {
   if (jNode.isObject) {
-    auto oValues = get<map<string, util::json::JSonNode>>(jNode.value);
+    auto oValues = get<map<string, JSonNode>>(jNode.value);
     cout << "{" << endl;
     for (const auto& node : oValues) {
       cout << "  \"" << node.first << "\": ";
       if (node.second.isValue) {
 	std::string vVal;
-        if (node.second.valueType == util::json::JSonNode::VType::String) {
+        if (node.second.valueType == JSonNode::VType::String) {
 	  vVal += "\""; 
           vVal += static_cast<std::string>(node.second);
 	  vVal += "\"";
         }
-        if (node.second.valueType == util::json::JSonNode::VType::Number)
+        if (node.second.valueType == JSonNode::VType::Number)
 	  vVal = std::to_string(static_cast<double>(node.second));
-	if (node.second.valueType == util::json::JSonNode::VType::Boolean)
+	if (node.second.valueType == JSonNode::VType::Boolean)
 	  vVal = (static_cast<bool>(node.second)) ? "true" : "false";
 	cout << vVal;
 	if (&node != &*oValues.rbegin()) 
@@ -95,9 +95,9 @@ void loopThrough(const util::json::JSonNode& jNode) {
 }
 
 int showParse(const RunInfos& rInfos) {
-  util::json::JSon json;
-  auto rsData = json.parseIn(rInfos.rawJsonStr);
-  loopThrough(rsData);
+  JSon json;
+  auto rootNode = json.parseIn(rInfos.rawJsonStr);
+  loopThrough(rootNode);
   return MSG_I_SUCCEEDED;
 }
 

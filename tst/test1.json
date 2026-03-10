@@ -1,0 +1,14 @@
+{
+  "urls": {
+    "signed": "http://localhost:8945/doc/75dfc0d9"
+  },
+  "document": {
+    "signedId": "75dfc0d9",
+    "expiredAt": "2026-03-09T22:46:52",
+    "mimeType": "application/pdf",
+    "fileName": "sample.pdf",
+    "hashValue": "I6wuZELPtBNbSLanDQHkRw==",
+    "hashValueAlgo": "MD5",
+    "length": 93246
+  }
+}

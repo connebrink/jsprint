@@ -1,10 +1,10 @@
 
+#include <iostream>
 #include <vector>
 
 #include "json.hpp"
 
 namespace util::json {
-
   JSonValidateInfo JSon::validate(const string& jsonStr) const {
     JSonValidateInfo result = {0,0,0,0,false};
     bool isInStrVal = false;
@@ -31,21 +31,16 @@ namespace util::json {
   JSonNode JSon::parse(const auto &jsonStr) const {
     string cjsName;
     string cjsValue;
-
     bool isInStr{false};
     bool isInObject{false};
     bool isInArray{false};
     bool isStrValue{false};
     bool isSubLevel{false};
-
     bool valName{false};
-
     JSonNode result;
     result.name = ".";
-
     vector<JSonNode> jArray;
     map<string, JSonNode> jObject;
-
     for (const auto &jC : jsonStr) {
       if (jC == ' ' && !isInStr)
 	continue;
@@ -54,7 +49,10 @@ namespace util::json {
 	continue;
       } else if (jC == '"' && !isInStr && !isSubLevel) {
 	isInStr = true;
-	valName = cjsName.length() == 0;
+	if (isInArray)
+	  valName = false;
+	else if (isInObject) 
+	  valName = cjsName.length() == 0;
 	if (!valName)
 	  isStrValue = true;
 	continue;
@@ -80,6 +78,7 @@ namespace util::json {
       }
       if ((jC == ',' || jC == '}' || jC == ']') && !isInStr && !valName && cjsValue.length() > 0) {
 	if (isInArray) {
+	  // cout << cjsValue << endl;
           if (!isSubLevel) {
 	    if ( (cjsValue[0] == '{')  && (cjsValue[cjsValue.length()-1] == '}') ) {
 	      jArray.push_back(parse(cjsValue));
@@ -156,7 +155,6 @@ namespace util::json {
 	    jObject[cjsName] =jsonNode;
 	  }
 	  //	  cout << cjsName << " : " << cjsValue << endl;
-	  
 	  cjsName = "";
 	  cjsValue = "";
 	}
@@ -167,7 +165,6 @@ namespace util::json {
             isSubLevel = false;
           else
             isInObject = false;
-
           result.isObject = true;
           result.value = jObject;
         }
@@ -177,8 +174,6 @@ namespace util::json {
       else
         cjsValue += jC;
     }
-  
-
     return result;
   }
 

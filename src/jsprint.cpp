@@ -73,6 +73,8 @@ void loopThrough(const JSonNode& jNode) {
     cout << "{" << endl;
     for (const auto& node : oValues) {
       cout << "  \"" << node.first << "\": ";
+      if (node.second.isNull)
+	cout << "null";
       if (node.second.isValue) {
 	std::string vVal;
         if (node.second.valueType == JSonNode::VType::String) {
@@ -85,13 +87,44 @@ void loopThrough(const JSonNode& jNode) {
 	if (node.second.valueType == JSonNode::VType::Boolean)
 	  vVal = (static_cast<bool>(node.second)) ? "true" : "false";
 	cout << vVal;
-	if (&node != &*oValues.rbegin()) 
-	  cout << ",";
-	cout << endl;
       }
+      if (node.second.isObject || node.second.isArray) {
+	loopThrough(node.second);
+      }
+      if (&node != &*oValues.rbegin()) 
+	cout << ",";
+      cout << endl;
     }
     cout << "}" << endl;
-  }  
+  }
+  else if (jNode.isArray) {
+    auto oValues = get<vector<JSonNode>>(jNode.value);
+    cout << "[" << endl;
+    for (const auto& node : oValues) {
+      if (node.isNull)
+	cout << "null";
+      if (node.isValue) {
+	std::string vVal;
+        if (node.valueType == JSonNode::VType::String) {
+	  vVal += "\""; 
+          vVal += static_cast<std::string>(node);
+	  vVal += "\"";
+        }
+        if (node.valueType == JSonNode::VType::Number)
+	  vVal = std::to_string(static_cast<double>(node));
+	if (node.valueType == JSonNode::VType::Boolean)
+	  vVal = (static_cast<bool>(node)) ? "true" : "false";
+	cout << vVal;
+      }
+      if (node.isObject || node.isArray) {
+	loopThrough(node);
+      }
+      if (&node != &*oValues.rbegin()) 
+	cout << ",";
+      cout << endl;
+    }
+    cout << "]" << endl;
+  }
 }
 
 int showParse(const RunInfos& rInfos) {

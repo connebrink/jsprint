@@ -55,7 +55,7 @@ namespace util::json {
   public:
     JSon(){};
   private:
-    JSonNode parse(const auto& jsonStr) const;
+    JSonNode parse(const auto& jsonStr, bool isRoot=true) const;
     JSonValidateInfo validate(const string& inJsonStr) const;
   public:
     JSonNode parseIn(const string& inJsonStr, JSonValidateInfo* validateInfo=nullptr) const;

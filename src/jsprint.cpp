@@ -99,6 +99,7 @@ void loopThrough(const JSonNode& jNode) {
   }
   else if (jNode.isArray) {
     auto oValues = get<vector<JSonNode>>(jNode.value);
+     cout << oValues.size() << endl;
     cout << "[" << endl;
     for (const auto& node : oValues) {
       if (node.isNull)
@@ -119,8 +120,9 @@ void loopThrough(const JSonNode& jNode) {
       if (node.isObject || node.isArray) {
 	loopThrough(node);
       }
-      if (&node != &*oValues.rbegin()) 
-	cout << ",";
+      else 
+      // if (&node != &*oValues.rbegin()) 
+      // 	cout << ",";
       cout << endl;
     }
     cout << "]" << endl;
@@ -130,7 +132,7 @@ void loopThrough(const JSonNode& jNode) {
 int showParse(const RunInfos& rInfos) {
   JSon json;
   auto rootNode = json.parseIn(rInfos.rawJsonStr);
-  loopThrough(rootNode);
+     // loopThrough(rootNode);
   return MSG_I_SUCCEEDED;
 }
 

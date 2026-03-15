@@ -1,0 +1,15 @@
+
+{
+
+"vorName": "Clas",
+"nachName": "Onnebrink",
+"anschrift":{ 
+
+	"Strasse": "Alleinsteiner Str. 10",
+	"Plz": 46325,
+	"Ort": "Borken"
+},
+"options": [false,true,30,null,"null", {"s1": "test1", "s2": "test2"}]
+
+
+}

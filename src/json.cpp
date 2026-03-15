@@ -68,7 +68,8 @@ namespace util::json {
       if (jC == '"') {
 	isInStr = !isInStr;
         if (!subOLevel) {
-	  valName = nName.length() == 0;
+	  if (isObj)
+	    valName = nName.length() == 0;
           continue;
         }
       }
@@ -76,6 +77,7 @@ namespace util::json {
       if (jC == '[' && !isInStr) {
 	isArr = true;
 	subOLevel++;
+	valName= false;
         if (!subOLevel) {
           continue;
         }
@@ -87,24 +89,24 @@ namespace util::json {
       }
 
       if (!subOLevel && (jC == ',' || jC == '}' || jC == ']') ) {
-
 	cout << subOLevel  << endl;
 	cout << nName << " : " << nValue << endl;
-
         if ((nValue[0] == '{') && (nValue[nValue.length() - 1] == '}')) {
-	   parse(nValue);
+          parse(nValue);
         }
-	else {
-	  if (isArr){}
+        else if ((nValue[0] == '[') && (nValue[nValue.length() - 1] == ']')) {
+          parse(nValue);
+        } else {
+          if (isArr){}
 	  if (isObj){}
-	}
-
-	  if (isStrValue) {}
-	  nName  = "";
-	  nValue = "";
+        }
+	if (isStrValue) {}
+	nName  = "";
+	nValue = "";
+	if (isObj)
 	  valName=true;
-	  if (jC == ',')
-	    continue;
+	if (jC == ',')
+	  continue;
       }
 
       if (valName)

@@ -1,2 +1,2 @@
 
-{"testA": "clas", "testB": {"valo": {"1":"a","2":"b", "3": {"name":"clas", "alter": 51}}, "val1": "a", "valb":"b"}, "testE": false, "arrTst":[1,2,3,"a","b"]}
+{"testA": "clas", "testB": {"valo": {"1":"a","2":"b", "3": {"name":"clas", "alter": 51}}, "val1": "a", "valb":"b"}, "testE": false, "arrTst":[1,2,3,[250,251],"a","b",{"1":"test"}]}

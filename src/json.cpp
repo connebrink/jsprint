@@ -38,8 +38,6 @@ namespace util::json {
     bool isInStr{false};
     bool isStrValue{false};
 
-    bool isInObject{false};
-    bool isInArray{false};
 
     bool valName{false};
 
@@ -75,7 +73,6 @@ namespace util::json {
       
 
       if (jC == '[' && !isInStr) {
-	isInArray = true;
 	subALevel++;
         if (!subALevel) {
 	  valName = false;
@@ -97,10 +94,7 @@ namespace util::json {
 	   parse(nValue);
         }
 
-          if (isInArray){
-	  }
 	  if (isStrValue) {}
-	  if (isInObject) {}
 	  nName  = "";
 	  nValue = "";
 	  valName=true;

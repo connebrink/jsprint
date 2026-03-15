@@ -60,5 +60,4 @@ namespace util::json {
   public:
     JSonNode parseIn(const string& inJsonStr, JSonValidateInfo* validateInfo=nullptr) const;
   };
-
 }

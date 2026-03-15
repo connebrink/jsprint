@@ -89,7 +89,7 @@ namespace util::json {
       }
 
       if (!subOLevel && (jC == ',' || jC == '}' || jC == ']') ) {
-	cout << subOLevel  << endl;
+	//cout << subOLevel  << endl;
 	cout << nName << " : " << nValue << endl;
         if ((nValue[0] == '{') && (nValue[nValue.length() - 1] == '}')) {
           parse(nValue);

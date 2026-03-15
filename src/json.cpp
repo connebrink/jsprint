@@ -38,7 +38,6 @@ namespace util::json {
     bool isInStr{false};
     bool isStrValue{false};
 
-
     bool valName{false};
 
     int subOLevel{-1};

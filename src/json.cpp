@@ -91,16 +91,22 @@ namespace util::json {
       if (!subOLevel && (jC == ',' || jC == '}' || jC == ']') ) {
 	//cout << subOLevel  << endl;
 	cout << nName << " : " << nValue << endl;
+	JSonNode jsonNodeValue;
         if ((nValue[0] == '{') && (nValue[nValue.length() - 1] == '}')) {
-          parse(nValue);
+	  jsonNodeValue = parse(nValue, false);
         }
         else if ((nValue[0] == '[') && (nValue[nValue.length() - 1] == ']')) {
-          parse(nValue);
+          jsonNodeValue = parse(nValue, false);
         } else {
           if (isArr){}
-	  if (isObj){}
+          if (isObj) {
+            jObject[nName] = jsonNodeValue;
+          }
+          if (isStrValue) {
+
+	    isStrValue = false;
+	  }
         }
-	if (isStrValue) {}
 	nName  = "";
 	nValue = "";
 	if (isObj)

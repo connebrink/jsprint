@@ -9,7 +9,7 @@ I want/need a small app that shows JSON in different styles and
 themes in terminal, selected by arguments. And its a small app  
 to test quick new C++-things and new approaches came in with   
 newer C++-versions. So its a project to exercise things in C++  
-too.
+too. And i tried to minimize codesize and maximize simplicity.
 
 ## Requirements
 - C++-Compiler (with at least C++-20-Support)

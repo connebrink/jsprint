@@ -32,39 +32,29 @@ namespace util::json {
     JSonNode result;
     if (isRoot)
       result.name = ".";
-
     vector<JSonNode> jArray;
     map<string, JSonNode> jObject;
-   
     bool isInStr{false};
     bool isStrValue{false};
-
     bool isObj{false};
     bool isArr{false};
-
     bool valName{false};
-
     int subOLevel{-1};
-    
     string nName;
     string nValue;
-
     auto skipChars = [](const auto& jsChar) {
       if (jsChar == ' ')
 	return true;
       return false;
     };
-
     for (const auto &jC : jsonStr) {
       if (skipChars(jC) && !isInStr) continue;
-
       if (jC == '{' && !isInStr) {
 	isObj = true;
 	subOLevel++;
 	if (!subOLevel)
 	  continue;
       }
-      
       if (jC == '"') {
 	isInStr = !isInStr;
         if (!subOLevel) {
@@ -73,7 +63,6 @@ namespace util::json {
           continue;
         }
       }
-
       if (jC == '[' && !isInStr) {
 	isArr = true;
 	subOLevel++;
@@ -82,12 +71,10 @@ namespace util::json {
           continue;
         }
       }
-
       if (!subOLevel && jC == ':') {
         valName = false;
         continue;
       }
-
       if (!subOLevel && (jC == ',' || jC == '}' || jC == ']') ) {
 	//cout << subOLevel  << endl;
 	cout << nName << " : " << nValue << endl;
@@ -98,12 +85,14 @@ namespace util::json {
         else if ((nValue[0] == '[') && (nValue[nValue.length() - 1] == ']')) {
           jsonNodeValue = parse(nValue, false);
         } else {
-          if (isArr){}
+          if (isArr){
+	    jsonNodeValue.isArray = true;
+	    jArray.push_back(jsonNodeValue);
+	  }
           if (isObj) {
             jObject[nName] = jsonNodeValue;
           }
           if (isStrValue) {
-
 	    isStrValue = false;
 	  }
         }
@@ -114,12 +103,10 @@ namespace util::json {
 	if (jC == ',')
 	  continue;
       }
-
       if (valName)
         nName += jC;
       else
         nValue += jC;
-
       if ((jC == '}' || jC == ']') && !isInStr) {
         subOLevel--;
       }

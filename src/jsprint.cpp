@@ -132,7 +132,7 @@ void loopThrough(const JSonNode& jNode) {
 int showParse(const RunInfos& rInfos) {
   JSon json;
   auto rootNode = json.parseIn(rInfos.rawJsonStr);
-     // loopThrough(rootNode);
+  loopThrough(rootNode);
   return MSG_I_SUCCEEDED;
 }
 

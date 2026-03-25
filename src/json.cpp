@@ -58,8 +58,13 @@ namespace util::json {
       if (jC == '"') {
 	isInStr = !isInStr;
         if (!subOLevel) {
-	  if (isObj)
-	    valName = nName.length() == 0;
+          if (isObj) {
+            valName = nName.length() == 0;
+	    if (!valName)
+	      isStrValue = true;
+          }
+	  if (isArr && !valName)
+	     isStrValue = true;
           continue;
         }
       }
@@ -73,35 +78,65 @@ namespace util::json {
       }
       if (!subOLevel && jC == ':') {
         valName = false;
+	isStrValue = false;
         continue;
       }
-      if (!subOLevel && (jC == ',' || jC == '}' || jC == ']') ) {
-	//cout << subOLevel  << endl;
+      if (!subOLevel && (jC == ',' || jC == '}' || jC == ']') && !isInStr) {
 	cout << nName << " : " << nValue << endl;
 	JSonNode jsonNodeValue;
         if ((nValue[0] == '{') && (nValue[nValue.length() - 1] == '}')) {
+	  jsonNodeValue.isObject = true;
 	  jsonNodeValue = parse(nValue, false);
         }
         else if ((nValue[0] == '[') && (nValue[nValue.length() - 1] == ']')) {
+	  jsonNodeValue.isArray = true;
           jsonNodeValue = parse(nValue, false);
-        } else {
-          if (isArr){
-	    jsonNodeValue.isArray = true;
-	    jArray.push_back(jsonNodeValue);
-	  }
-          if (isObj) {
-            jObject[nName] = jsonNodeValue;
-          }
-          if (isStrValue) {
-	    isStrValue = false;
+        }
+	else {
+	  jsonNodeValue.isNull = nValue == "null";
+	  if(!jsonNodeValue.isNull) {
+	    jsonNodeValue.isValue = true;
+	    if (isStrValue) {
+	      jsonNodeValue.valueType = JSonNode::String;
+	      jsonNodeValue.value = nValue;
+	      isStrValue = false;
+	    }
+	    else if (nValue == "true" || nValue== "false") {
+	      jsonNodeValue.valueType = JSonNode::Boolean;
+	      jsonNodeValue.value = nValue == "true";
+	    }
+	    else {
+	      jsonNodeValue.valueType = JSonNode::Number;
+	      jsonNodeValue.value = stod(nValue);
+	    }
 	  }
         }
+	if (isArr) {
+	  jArray.push_back(jsonNodeValue);
+	}
+	if (isObj) {
+	  jObject[nName] = jsonNodeValue;
+	}
 	nName  = "";
 	nValue = "";
 	if (isObj)
 	  valName=true;
 	if (jC == ',')
 	  continue;
+
+	if (jC == '}' || jC == ']') {
+	  if (isArr) {
+	    result.isArray = true;
+	    result.value = jArray;
+	    jArray.clear();
+	  }
+	  else if (isObj) {
+	    result.isObject = true;
+	    result.value = jObject;
+	    jObject.clear();
+	  }
+	}
+	
       }
       if (valName)
         nName += jC;

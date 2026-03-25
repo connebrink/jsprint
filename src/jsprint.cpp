@@ -67,6 +67,18 @@ int showHelp() {
 int showThemes() {return MSG_I_SUCCEEDED;}
 int showStyles() {return MSG_I_SUCCEEDED;}
 
+string prepOutNumberValue(const string& nodeNumberValue) {
+  string numResult { nodeNumberValue.substr(0, nodeNumberValue.find(".")) };
+  string numRest { nodeNumberValue.substr(nodeNumberValue.find("."), nodeNumberValue.length()) };
+  for (auto i = numRest.length(); i > 0 && numRest[--i] == '0';) {
+    numRest.pop_back();
+  }
+  if (numRest.length()==1)
+    return numResult;
+  else
+    return numResult+numRest;
+}
+
 void loopThrough(const JSonNode& jNode) {
   if (jNode.isObject) {
     auto oValues = get<map<string, JSonNode>>(jNode.value);
@@ -83,7 +95,7 @@ void loopThrough(const JSonNode& jNode) {
 	  vVal += "\"";
         }
         if (node.second.valueType == JSonNode::VType::Number)
-	  vVal = std::to_string(static_cast<double>(node.second));
+	  vVal = prepOutNumberValue(std::to_string(static_cast<double>(node.second)));
 	if (node.second.valueType == JSonNode::VType::Boolean)
 	  vVal = (static_cast<bool>(node.second)) ? "true" : "false";
 	cout << vVal;
@@ -112,7 +124,7 @@ void loopThrough(const JSonNode& jNode) {
 	  vVal += "\"";
         }
         if (node.valueType == JSonNode::VType::Number)
-	  vVal = std::to_string(static_cast<double>(node));
+	  vVal = prepOutNumberValue(std::to_string(static_cast<double>(node)));
 	if (node.valueType == JSonNode::VType::Boolean)
 	  vVal = (static_cast<bool>(node)) ? "true" : "false";
 	cout << vVal;
